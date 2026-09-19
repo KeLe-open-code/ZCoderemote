@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/refresh"
+        app:iconTint="@color/zr_text_dim"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_copy"
+        android:icon="@drawable/ic_copy"
+        android:title="@string/copy_link"
+        app:iconTint="@color/zr_text_dim"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_browser"
+        android:icon="@drawable/ic_open"
+        android:title="@string/open_in_browser"
+        app:iconTint="@color/zr_text_dim"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 与 zcode.z.ai/remote 页面 theme-color 一致 -->
+    <color name="zr_bg">#161616</color>
+    <!-- 取自电脑端 ZCode 图标底色 -->
+    <color name="zr_bg_deep">#0A0B0C</color>
+    <color name="zr_surface">#1F2225</color>
+    <color name="zr_outline">#3A3F44</color>
+    <color name="zr_text">#ECEDED</color>
+    <color name="zr_text_dim">#9BA0A5</color>
+    <color name="zr_primary">#FFFFFF</color>
+    <color name="zr_on_primary">#161616</color>
+    <color name="zr_text_faint">#75797E</color>
+
+    <color name="ic_launcher_background">#0A0B0C</color>
+</resources>

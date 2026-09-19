@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZCode Remote</string>
+    <string name="back">返回</string>
+
+    <string name="home_title">远程控制你的电脑</string>
+    <string name="home_subtitle">在电脑端 ZCode 打开「远程」生成链接，手机粘贴即连</string>
+    <string name="tile_zcode_name">ZCode</string>
+    <string name="tile_zcode_desc">电脑端「远程」生成的链接，粘贴即连</string>
+    <string name="saved_count">%1$d 个连接</string>
+
+    <string name="btn_connect">保存并连接</string>
+    <string name="paste">粘贴</string>
+    <string name="delete">删除</string>
+
+    <string name="saved_section">已保存的连接</string>
+    <string name="empty_title">还没有保存的连接</string>
+    <string name="empty_subtitle_zcode">在上方粘贴电脑端 ZCode 生成的远程链接，\n连接后自动保存，下次一键直连</string>
+
+    <string name="subtitle_zcode">粘贴电脑端 ZCode「远程」功能生成的链接</string>
+    <string name="link_hint_zcode">https://zcode.z.ai/remote/v4?sid=…</string>
+    <string name="user_hint">用户名（选填）</string>
+    <string name="pass_hint">密码（选填）</string>
+
+    <string name="invalid_url">请输入有效的链接（以 http(s):// 开头）</string>
+    <string name="not_zcode_link">该链接不是 zcode.z.ai 的远程链接，仍要连接吗？</string>
+    <string name="connect_anyway">仍然连接</string>
+    <string name="clipboard_empty">剪贴板中没有找到链接</string>
+    <string name="deleted">已删除「%1$s」</string>
+    <string name="undo">撤销</string>
+
+    <string name="refresh">刷新</string>
+    <string name="copy_link">复制地址</string>
+    <string name="open_in_browser">在浏览器中打开</string>
+    <string name="disconnect">断开连接</string>
+
+    <string name="load_failed">连接失败</string>
+    <string name="load_failed_detail">请检查网络或服务器状态后重试</string>
+    <string name="retry">重试</string>
+    <string name="link_copied">地址已复制</string>
+    <string name="downloading">已开始下载</string>
+    <string name="no_browser">没有可用于打开链接的应用</string>
+    <string name="auth_missing">该服务器需要认证：请返回后在用户名/密码里填写再连接</string>
+</resources>

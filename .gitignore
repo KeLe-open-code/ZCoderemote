@@ -1,0 +1,16 @@
+# 构建产物
+.gradle/
+build/
+app/build/
+.kotlin/
+
+# 本地环境（含 SDK 路径，不入库）
+local.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 不把二进制产物提交进 git，APK 通过 GitHub Releases 发布
+*.apk
