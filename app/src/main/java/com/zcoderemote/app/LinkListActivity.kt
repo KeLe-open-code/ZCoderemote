@@ -21,9 +21,11 @@ class LinkListActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_URL = "url"
+        const val EXTRA_TYPE = "type"
     }
 
     private lateinit var adapter: SavedLinksAdapter
+    private var connectionType = LinkStore.TYPE_ZCODE
     private lateinit var inputUrl: TextInputEditText
     private lateinit var emptyState: View
     private lateinit var root: View
@@ -33,17 +35,27 @@ class LinkListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         root = findViewById(R.id.root)
         setupZCodeInsets(root)
+        connectionType = intent.getStringExtra(EXTRA_TYPE) ?: LinkStore.TYPE_ZCODE
 
+        val isZCode = connectionType == LinkStore.TYPE_ZCODE
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         toolbar.setNavigationOnClickListener { finish() }
-        toolbar.title = getString(R.string.tile_zcode_name)
+        toolbar.setTitle(if (isZCode) R.string.tile_zcode_name else R.string.tile_kimi_name)
         inputUrl = findViewById(R.id.input_url)
         emptyState = findViewById(R.id.empty_state)
 
-        findViewById<TextView>(R.id.connect_title).text = "连接电脑 ZCode"
-        findViewById<TextView>(R.id.connect_subtitle).setText(R.string.subtitle_zcode)
-        findViewById<TextInputLayout>(R.id.input_layout).hint = getString(R.string.link_hint_zcode)
-        findViewById<TextView>(R.id.empty_subtitle).setText(R.string.empty_subtitle_zcode)
+        findViewById<TextView>(R.id.connect_title).setText(
+            if (isZCode) R.string.connect_title_zcode else R.string.connect_title_kimi
+        )
+        findViewById<TextView>(R.id.connect_subtitle).setText(
+            if (isZCode) R.string.subtitle_zcode else R.string.subtitle_kimi
+        )
+        findViewById<TextInputLayout>(R.id.input_layout).hint = getString(
+            if (isZCode) R.string.link_hint_zcode else R.string.link_hint_kimi
+        )
+        findViewById<TextView>(R.id.empty_subtitle).setText(
+            if (isZCode) R.string.empty_subtitle_zcode else R.string.empty_subtitle_kimi
+        )
         findViewById<View>(R.id.auth_row).visibility = View.GONE
 
         adapter = SavedLinksAdapter(
@@ -76,7 +88,7 @@ class LinkListActivity : AppCompatActivity() {
             toast(R.string.invalid_url)
             return
         }
-        if (!LinkStore.isZCodeUrl(raw)) {
+        if (connectionType == LinkStore.TYPE_ZCODE && !LinkStore.isZCodeUrl(raw)) {
             MaterialAlertDialogBuilder(this)
                 .setMessage(R.string.not_zcode_link)
                 .setPositiveButton(R.string.connect_anyway) { _, _ -> connect(raw) }
@@ -89,7 +101,7 @@ class LinkListActivity : AppCompatActivity() {
 
     private fun connect(url: String) {
         hideKeyboard()
-        val link = LinkStore.upsert(this, LinkStore.TYPE_ZCODE, url, "", "")
+        val link = LinkStore.upsert(this, connectionType, url, "", "")
         refreshList()
         openSession(link)
     }
@@ -102,6 +114,7 @@ class LinkListActivity : AppCompatActivity() {
                 .putExtra(SessionActivity.EXTRA_NAME, link.name)
                 .putExtra(SessionActivity.EXTRA_USER, link.user)
                 .putExtra(SessionActivity.EXTRA_PASS, link.pass)
+                .putExtra(SessionActivity.EXTRA_TYPE, link.type)
         )
     }
 
@@ -131,7 +144,7 @@ class LinkListActivity : AppCompatActivity() {
     }
 
     private fun refreshList() {
-        val links = LinkStore.load(this, LinkStore.TYPE_ZCODE)
+        val links = LinkStore.load(this, connectionType)
         adapter.submit(links)
         findViewById<TextView>(R.id.saved_header).visibility =
             if (links.isEmpty()) View.GONE else View.VISIBLE

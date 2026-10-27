@@ -23,6 +23,7 @@ data class SavedLink(
 object LinkStore {
 
     const val TYPE_ZCODE = "zcode"
+    const val TYPE_KIMI = "kimi"
 
     private const val PREFS = "zcode_remote"
     private const val KEY = "links"

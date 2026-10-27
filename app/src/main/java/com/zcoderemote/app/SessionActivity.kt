@@ -33,12 +33,14 @@ class SessionActivity : AppCompatActivity() {
         const val EXTRA_NAME = "name"
         const val EXTRA_USER = "user"
         const val EXTRA_PASS = "pass"
+        const val EXTRA_TYPE = "type"
     }
 
     private lateinit var webView: WebView
     private lateinit var progress: ProgressBar
     private lateinit var errorOverlay: View
     private var linkUrl: String = ""
+    private var connectionType: String = LinkStore.TYPE_ZCODE
     private var authUser: String = ""
     private var authPass: String = ""
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
@@ -55,6 +57,7 @@ class SessionActivity : AppCompatActivity() {
         setupZCodeInsets(findViewById(R.id.root))
 
         linkUrl = intent.getStringExtra(EXTRA_URL).orEmpty()
+        connectionType = intent.getStringExtra(EXTRA_TYPE) ?: LinkStore.TYPE_ZCODE
         val name = intent.getStringExtra(EXTRA_NAME) ?: getString(R.string.app_name)
         authUser = intent.getStringExtra(EXTRA_USER).orEmpty()
         authPass = intent.getStringExtra(EXTRA_PASS).orEmpty()
@@ -124,8 +127,11 @@ class SessionActivity : AppCompatActivity() {
                 request: WebResourceRequest
             ): Boolean {
                 val uri = request.url
-                // 同一服务器（host:port 一致）的跳转留在应用内，其余交给系统浏览器
-                return if (LinkStore.hostKeyOf(uri.toString()) == LinkStore.hostKeyOf(linkUrl)) {
+                val isWebLink = uri.scheme == "http" || uri.scheme == "https"
+                val isSameServer =
+                    LinkStore.hostKeyOf(uri.toString()) == LinkStore.hostKeyOf(linkUrl)
+                // Kimi 的网页跳转全部留在应用内；ZCode 保持原有的同服务器规则
+                return if ((connectionType == LinkStore.TYPE_KIMI && isWebLink) || isSameServer) {
                     false
                 } else {
                     runCatching { startActivity(Intent(Intent.ACTION_VIEW, uri)) }

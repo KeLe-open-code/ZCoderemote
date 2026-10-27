@@ -1,48 +1,54 @@
-# ZCode Remote
+# AI Remote
 
-用手机远程操控电脑上的 [ZCode](https://zcode.z.ai) 编程助手。
+用手机远程操控电脑上的 [ZCode](https://zcode.z.ai) 和 [Kimi Code](https://www.kimi.com/code) 编程助手。
 
-电脑端 ZCode 的「远程」功能会生成一个 `zcode.z.ai/remote` 链接，本 App 让你在手机上保存、管理这些链接，
-并以内置 WebView 打开远程控制页 —— 深色主题、图标风格与电脑端一致，连接走 z.ai 官方中转，
-手机不需要与电脑同一网络，也无需代理。
+启动后选择 ZCode 或 Kimi Code，粘贴电脑端生成的链接，即可通过内置 WebView 连接。两类链接分别保存在手机本地，远程控制不需要自动跳转浏览器。
 
 ## 功能
 
-- **链接管理**：粘贴或从剪贴板一键导入远程链接，保存后下次一键直连，支持删除与撤销
-- **深链唤起**：在手机浏览器/微信里点开 `zcode.z.ai/remote/...` 链接，直接唤起 App 自动填入并连接
-- **分享接收**：把包含链接的文本「分享」到本 App 即可导入
-- **会话体验**：屏幕常亮、多返回层级（网页回退优先）、加载失败重试、链接复制、在浏览器中打开
-- **隐私**：所有链接只保存在手机本地（SharedPreferences），不经过任何第三方服务器
+- **双入口**：首页同时提供 ZCode 与 Kimi Code 图标和独立连接列表
+- **链接管理**：粘贴或从剪贴板导入远程链接，保存后下次一键直连，支持删除与撤销
+- **ZCode 深链**：在手机浏览器/微信里点开 `zcode.z.ai/remote/...` 链接，直接唤起 App 自动连接
+- **分享接收**：把包含链接的文本分享到本 App，按链接类型自动进入对应入口
+- **Kimi Code 应用内连接**：Kimi Code Web 的 HTTP(S) 页面及跳转均留在 App 内，不自动打开浏览器
+- **会话体验**：屏幕常亮、网页回退优先、加载失败重试、链接复制，也可手动选择在浏览器中打开
+- **隐私**：所有链接只保存在手机本地（SharedPreferences），不经过本 App 的第三方服务器
 
 ## 使用
 
-1. 在电脑端 ZCode 里打开「远程」功能，生成远程链接
-2. 把链接发到手机（微信/二维码/任意方式）
-3. 手机上安装本 App，粘贴链接 → 保存并连接
+### ZCode
+
+1. 在电脑端 ZCode 里打开「远程」功能，生成 `zcode.z.ai/remote` 链接
+2. 把链接发到手机，在首页选择 ZCode
+3. 粘贴链接，点击「保存并连接」
+
+### Kimi Code
+
+1. 在电脑端运行 `kimi web --host 0.0.0.0 --no-open`，生成带 `#token=` 的 Web 链接
+2. 将链接中的 `127.0.0.1` 替换为电脑的局域网 IP，并确保手机可以访问该地址和端口
+3. 在首页选择 Kimi Code，粘贴完整链接（包括 `#token=`），点击「保存并连接」
+
+Kimi Code Web 的地址和端口由电脑端服务决定；使用局域网地址时，手机与电脑通常需要处于同一网络。请只在可信网络中开放服务，不要公开或泄露 token。
 
 ## 构建
 
 - JDK 17 + Android SDK（compileSdk 35，minSdk 24）
-- Android Studio 直接打开即可；命令行：
-
-```bash
-./gradlew :app:assembleRelease
-# 产物 app/build/outputs/apk/release/app-release.apk（debug 签名，可直接侧载安装）
-```
+- Android Studio 直接打开即可；使用 Gradle 执行 `:app:assembleRelease`
+- 产物：`app/build/outputs/apk/release/app-release.apk`（debug 签名，可直接侧载安装）
 
 也可在 [Releases](../../releases) 页直接下载 APK。
 
 ## 技术要点
 
 - Kotlin + XML View 体系 + Material 3（深色），无其他运行时依赖
-- `HomeActivity` 入口与深链路由 → `LinkListActivity` 链接管理 → `SessionActivity` WebView 会话页
-- `LinkStore` SharedPreferences(JSON) 存储，按 host:port 判重去重
+- `HomeActivity` 双入口与深链路由 → `LinkListActivity` 分类链接管理 → `SessionActivity` WebView 会话页
+- `LinkStore` SharedPreferences(JSON) 存储，按类型及 host:port 判重；旧版数据继续作为 ZCode 连接读取
 - 适配 Android 15 边到边（edge-to-edge）与旧版系统的着色状态栏
 
 ## 声明
 
-本项目为个人工具，非 Z.ai 官方产品，与 ZCode/OpenAI 无隶属关系。
-「远程」功能本身由 zcode.z.ai 提供，请遵守其服务条款。
+本项目为个人工具，非 Z.ai 或 Moonshot AI 官方产品，与 ZCode、Kimi Code 无隶属关系。
+远程功能分别由对应服务提供，请遵守其服务条款。
 
 ## License
 
