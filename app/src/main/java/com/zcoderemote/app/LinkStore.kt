@@ -18,7 +18,7 @@ data class SavedLink(
 
 /**
  * 已保存的连接（含可选 HTTP Basic Auth 凭据），JSON 存于 SharedPreferences。
- * 按 host:port 判重：同一服务器重复粘贴时更新而非新增。
+ * ZCode 按 host:port 判重，Kimi Remote Control 按设备 ID 判重。
  */
 object LinkStore {
 
@@ -70,13 +70,13 @@ object LinkStore {
     }
 
     /**
-     * 新增或更新（按 type + host:port 判重），新条目置顶。
+     * 新增或更新，新条目置顶。Kimi 按远程设备判重，其他连接按 host:port 判重。
      * 用户名/密码留空时保留旧条目里已保存的凭据。
      */
     fun upsert(context: Context, type: String, url: String, user: String, pass: String): SavedLink {
         val links = load(context)
-        val key = hostKeyOf(url)
-        val index = links.indexOfFirst { it.type == type && hostKeyOf(it.url) == key }
+        val key = linkKeyOf(url, type)
+        val index = links.indexOfFirst { it.type == type && linkKeyOf(it.url, type) == key }
         val old = if (index >= 0) links[index] else null
         val link = SavedLink(
             id = old?.id ?: UUID.randomUUID().toString(),
@@ -120,6 +120,20 @@ object LinkStore {
     fun isZCodeUrl(url: String): Boolean =
         runCatching { Uri.parse(url).host?.endsWith("zcode.z.ai") == true }.getOrDefault(false)
 
+    fun isKimiRemoteUrl(url: String): Boolean = runCatching {
+        val uri = Uri.parse(url)
+        val isRemoteHost = uri.host == "code-rc.kimi.com" || uri.host == "code-rc.kimi.ai"
+        uri.scheme == "https" && isRemoteHost && uri.path?.startsWith("/devices/") == true
+    }.getOrDefault(false)
+
+    private fun linkKeyOf(url: String, type: String): String {
+        if (type == TYPE_KIMI && isKimiRemoteUrl(url)) {
+            val devicePath = Uri.parse(url).path.orEmpty().trimEnd('/')
+            return "${Uri.parse(url).host}$devicePath"
+        }
+        return hostKeyOf(url)
+    }
+
     /** 形如 host 或 host:port 的判重键。 */
     fun hostKeyOf(url: String): String = runCatching {
         val uri = Uri.parse(url)
@@ -127,13 +141,17 @@ object LinkStore {
         "${uri.host}$port"
     }.getOrDefault(url)
 
-    /** 展示名：优先取链接 name 参数（电脑端生成的名字），否则 host。 */
+    /** 展示名：ZCode 优先使用 name 参数，Kimi 使用远程设备 ID。 */
     fun nameOf(url: String, type: String): String = runCatching {
+        val uri = Uri.parse(url)
         if (type == TYPE_ZCODE) {
-            val n = Uri.parse(url).getQueryParameter("name")
+            val n = uri.getQueryParameter("name")
             if (!n.isNullOrBlank()) return n
         }
-        val uri = Uri.parse(url)
+        if (type == TYPE_KIMI && isKimiRemoteUrl(url)) {
+            val deviceId = uri.pathSegments.getOrNull(1)
+            if (!deviceId.isNullOrBlank()) return "Kimi · ${deviceId.take(8)}"
+        }
         val port = if (uri.port > 0) ":${uri.port}" else ""
         "${uri.host}$port"
     }.getOrDefault("远程连接")

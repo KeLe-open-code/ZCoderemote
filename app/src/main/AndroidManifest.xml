@@ -33,6 +33,26 @@
                     android:pathPrefix="/remote" />
             </intent-filter>
 
+            <!-- Kimi Code Remote Control 链接直接唤起应用内会话 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="code-rc.kimi.com"
+                    android:pathPrefix="/devices/" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="code-rc.kimi.ai"
+                    android:pathPrefix="/devices/" />
+            </intent-filter>
+
             <!-- 把包含地址的文本分享到本应用 -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

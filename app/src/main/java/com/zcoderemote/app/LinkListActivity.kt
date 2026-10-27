@@ -88,9 +88,16 @@ class LinkListActivity : AppCompatActivity() {
             toast(R.string.invalid_url)
             return
         }
-        if (connectionType == LinkStore.TYPE_ZCODE && !LinkStore.isZCodeUrl(raw)) {
+        val warning = when {
+            connectionType == LinkStore.TYPE_ZCODE && !LinkStore.isZCodeUrl(raw) ->
+                R.string.not_zcode_link
+            connectionType == LinkStore.TYPE_KIMI && !LinkStore.isKimiRemoteUrl(raw) ->
+                R.string.not_kimi_link
+            else -> null
+        }
+        if (warning != null) {
             MaterialAlertDialogBuilder(this)
-                .setMessage(R.string.not_zcode_link)
+                .setMessage(warning)
                 .setPositiveButton(R.string.connect_anyway) { _, _ -> connect(raw) }
                 .setNegativeButton(android.R.string.cancel, null)
                 .show()

@@ -8,9 +8,9 @@
 
 - **双入口**：首页同时提供 ZCode 与 Kimi Code 图标和独立连接列表
 - **链接管理**：粘贴或从剪贴板导入远程链接，保存后下次一键直连，支持删除与撤销
-- **ZCode 深链**：在手机浏览器/微信里点开 `zcode.z.ai/remote/...` 链接，直接唤起 App 自动连接
+- **深链唤起**：ZCode 远程链接及 Kimi Code Remote Control 链接可直接唤起 App
 - **分享接收**：把包含链接的文本分享到本 App，按链接类型自动进入对应入口
-- **Kimi Code 应用内连接**：Kimi Code Web 的 HTTP(S) 页面及跳转均留在 App 内，不自动打开浏览器
+- **Kimi Code 应用内连接**：Remote Control 页面及登录跳转留在 App 内，支持保存多台远程设备
 - **会话体验**：屏幕常亮、网页回退优先、加载失败重试、链接复制，也可手动选择在浏览器中打开
 - **隐私**：所有链接只保存在手机本地（SharedPreferences），不经过本 App 的第三方服务器
 
@@ -24,11 +24,12 @@
 
 ### Kimi Code
 
-1. 在电脑端运行 `kimi web --host 0.0.0.0 --no-open`，生成带 `#token=` 的 Web 链接
-2. 将链接中的 `127.0.0.1` 替换为电脑的局域网 IP，并确保手机可以访问该地址和端口
-3. 在首页选择 Kimi Code，粘贴完整链接（包括 `#token=`），点击「保存并连接」
+1. 确认电脑端 Kimi Code 已登录具有 Remote Control 权限的 Kimi 账号，并保持电脑清醒、联网
+2. 在电脑端运行 `kimi rc`（也可使用 `kimi remote` 或 CLI 内的 `/remote-control`）
+3. 把终端生成的 `https://code-rc.kimi.com/devices/...` 链接完整发到手机；国际区账号使用 `code-rc.kimi.ai`
+4. 在首页选择 Kimi Code，粘贴链接并连接，登录与电脑端相同的 Kimi 账号
 
-Kimi Code Web 的地址和端口由电脑端服务决定；使用局域网地址时，手机与电脑通常需要处于同一网络。请只在可信网络中开放服务，不要公开或泄露 token。
+Kimi Remote Control 通过 Kimi 官方中继连接，手机与电脑不需要处于同一网络，也不要把链接中的地址替换为局域网 IP。远程链接可控制电脑会话和文件，不要分享给他人。电脑端的 `kimi rc` 进程退出后，远程设备会离线。
 
 ## 构建
 
@@ -42,7 +43,7 @@ Kimi Code Web 的地址和端口由电脑端服务决定；使用局域网地址
 
 - Kotlin + XML View 体系 + Material 3（深色），无其他运行时依赖
 - `HomeActivity` 双入口与深链路由 → `LinkListActivity` 分类链接管理 → `SessionActivity` WebView 会话页
-- `LinkStore` SharedPreferences(JSON) 存储，按类型及 host:port 判重；旧版数据继续作为 ZCode 连接读取
+- `LinkStore` SharedPreferences(JSON) 存储；ZCode 按 host:port 判重，Kimi 按远程设备 ID 判重；旧版数据继续兼容
 - 适配 Android 15 边到边（edge-to-edge）与旧版系统的着色状态栏
 
 ## 声明

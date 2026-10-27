@@ -9,6 +9,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
@@ -43,6 +44,7 @@ class SessionActivity : AppCompatActivity() {
     private var connectionType: String = LinkStore.TYPE_ZCODE
     private var authUser: String = ""
     private var authPass: String = ""
+    private var kimiAuthDialog: KimiAuthDialog? = null
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
 
     private val fileChooser =
@@ -118,6 +120,8 @@ class SessionActivity : AppCompatActivity() {
             setSupportZoom(false)
             builtInZoomControls = false
             displayZoomControls = false
+            setSupportMultipleWindows(connectionType == LinkStore.TYPE_KIMI)
+            javaScriptCanOpenWindowsAutomatically = connectionType == LinkStore.TYPE_KIMI
         }
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
@@ -176,6 +180,32 @@ class SessionActivity : AppCompatActivity() {
                 }
             }
 
+            override fun onCreateWindow(
+                view: WebView,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message
+            ): Boolean {
+                if (connectionType != LinkStore.TYPE_KIMI) return false
+                kimiAuthDialog?.dismiss()
+                val dialog = KimiAuthDialog(this@SessionActivity)
+                kimiAuthDialog = dialog
+                val transport = resultMsg.obj as WebView.WebViewTransport
+                transport.webView = dialog.webView
+                resultMsg.sendToTarget()
+                dialog.show()
+                return true
+            }
+
+            override fun onCloseWindow(window: WebView) {
+                if (kimiAuthDialog?.webView === window) {
+                    kimiAuthDialog?.dismiss()
+                    kimiAuthDialog = null
+                } else {
+                    super.onCloseWindow(window)
+                }
+            }
+
             override fun onShowFileChooser(
                 view: WebView,
                 callback: ValueCallback<Array<Uri>>,
@@ -224,6 +254,8 @@ class SessionActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        kimiAuthDialog?.dismiss()
+        kimiAuthDialog = null
         webView.destroy()
         super.onDestroy()
     }

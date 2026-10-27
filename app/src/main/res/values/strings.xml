@@ -8,7 +8,7 @@
     <string name="tile_zcode_name">ZCode</string>
     <string name="tile_zcode_desc">电脑端「远程」生成的链接，粘贴即连</string>
     <string name="tile_kimi_name">Kimi Code</string>
-    <string name="tile_kimi_desc">Kimi Code Web 链接，应用内直接远程控制</string>
+    <string name="tile_kimi_desc">kimi rc 生成的远程链接，应用内直接控制</string>
     <string name="saved_count">%1$d 个连接</string>
 
     <string name="btn_connect">保存并连接</string>
@@ -18,19 +18,20 @@
     <string name="saved_section">已保存的连接</string>
     <string name="empty_title">还没有保存的连接</string>
     <string name="empty_subtitle_zcode">在上方粘贴电脑端 ZCode 生成的远程链接，\n连接后自动保存，下次一键直连</string>
-    <string name="empty_subtitle_kimi">在上方粘贴 Kimi Code Web 生成的链接，\n连接后自动保存，下次一键直连</string>
+    <string name="empty_subtitle_kimi">在电脑端运行 kimi rc，粘贴生成的远程链接，\n登录同一 Kimi 账号即可控制，无需同一网络</string>
 
     <string name="connect_title_zcode">连接电脑 ZCode</string>
     <string name="connect_title_kimi">连接电脑 Kimi Code</string>
     <string name="subtitle_zcode">粘贴电脑端 ZCode「远程」功能生成的链接</string>
-    <string name="subtitle_kimi">粘贴 Kimi Code Web 链接，在应用内直接打开</string>
+    <string name="subtitle_kimi">粘贴 kimi rc 生成的链接，登录同一 Kimi 账号</string>
     <string name="link_hint_zcode">https://zcode.z.ai/remote/v4?sid=…</string>
-    <string name="link_hint_kimi">http://电脑IP:端口/#token=…</string>
+    <string name="link_hint_kimi">https://code-rc.kimi.com/devices/…</string>
     <string name="user_hint">用户名（选填）</string>
     <string name="pass_hint">密码（选填）</string>
 
     <string name="invalid_url">请输入有效的链接（以 http(s):// 开头）</string>
     <string name="not_zcode_link">该链接不是 zcode.z.ai 的远程链接，仍要连接吗？</string>
+    <string name="not_kimi_link">该链接不是 kimi rc 生成的 code-rc.kimi.com/.ai 远程链接，仍要连接吗？</string>
     <string name="connect_anyway">仍然连接</string>
     <string name="clipboard_empty">剪贴板中没有找到链接</string>
     <string name="deleted">已删除「%1$s」</string>
@@ -48,4 +49,6 @@
     <string name="downloading">已开始下载</string>
     <string name="no_browser">没有可用于打开链接的应用</string>
     <string name="auth_missing">该服务器需要认证：请返回后在用户名/密码里填写再连接</string>
+    <string name="kimi_authorization">Kimi 账号授权</string>
+    <string name="close_authorization">关闭授权</string>
 </resources>
